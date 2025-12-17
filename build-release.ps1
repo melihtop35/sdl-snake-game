@@ -2,7 +2,7 @@
 # Bu script projeyi release modunda derler, gerekli dosyalarla paketler ve ZIP çıktısı alır
 
 param(
-    [string]$IconPath = "assets\sprites\snake_green_head.png",
+    [string]$IconPath = "assets\sprites\snake_green_head.ico",
     [string]$OutputName = "SnakeGame",
     [switch]$KeepDist = $false
 )
@@ -28,7 +28,6 @@ Write-Host ""
 $MSYS2_ROOT = "C:\msys64\ucrt64"
 $GCC = "$MSYS2_ROOT\bin\g++.exe"
 $WINDRES = "$MSYS2_ROOT\bin\windres.exe"
-$MAGICK = "magick"  # ImageMagick (PATH'de olmalı)
 
 # Dizinler
 $DistDir = Join-Path $ProjectRoot "dist"
@@ -42,31 +41,22 @@ New-Item -ItemType Directory -Path $DistDir -Force | Out-Null
 New-Item -ItemType Directory -Path $BuildDir -Force | Out-Null
 Write-Success "Dizinler hazırlandı"
 
-# Icon oluşturma
+# Icon hazırlama
 Write-Step "Icon dosyası hazırlanıyor..."
-$IcoPath = Join-Path $BuildDir "icon.ico"
 $RcPath = Join-Path $BuildDir "resource.rc"
 $ResPath = Join-Path $BuildDir "resource.res"
 
-# PNG'den ICO oluştur (ImageMagick gerekli)
-$PngFullPath = Join-Path $ProjectRoot $IconPath
+# ICO dosyasını kontrol et (artık doğrudan ICO kullanıyoruz)
+$IcoFullPath = Join-Path $ProjectRoot $IconPath
 
-if (Test-Path $PngFullPath) {
-    try {
-        # ImageMagick ile ICO oluştur
-        & $MAGICK convert $PngFullPath -define icon:auto-resize=256,128,64,48,32,16 $IcoPath 2>$null
-        if (-not (Test-Path $IcoPath)) {
-            throw "ICO oluşturulamadı"
-        }
-        Write-Success "Icon oluşturuldu: $IcoPath"
-    }
-    catch {
-        Write-Host "[UYARI] ImageMagick bulunamadı veya çalışmadı. Varsayılan icon kullanılacak." -ForegroundColor Yellow
-        $IcoPath = $null
-    }
+if (Test-Path $IcoFullPath) {
+    # ICO dosyasını build dizinine kopyala
+    $IcoPath = Join-Path $BuildDir "icon.ico"
+    Copy-Item $IcoFullPath $IcoPath -Force
+    Write-Success "Icon bulundu: $IcoFullPath"
 }
 else {
-    Write-Host "[UYARI] Icon kaynak dosyası bulunamadı: $PngFullPath" -ForegroundColor Yellow
+    Write-Host "[UYARI] Icon dosyası bulunamadı: $IcoFullPath" -ForegroundColor Yellow
     $IcoPath = $null
 }
 
@@ -94,11 +84,11 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "Snake Game Studio"
+            VALUE "CompanyName", "MeganSS"
             VALUE "FileDescription", "Snake Game - Classic Snake Game"
             VALUE "FileVersion", "1.0.0.0"
             VALUE "InternalName", "$OutputName"
-            VALUE "LegalCopyright", "Copyright (C) 2024"
+            VALUE "LegalCopyright", "Copyright (C) 2026 MeganSS. All rights reserved."
             VALUE "OriginalFilename", "$OutputName.exe"
             VALUE "ProductName", "Snake Game"
             VALUE "ProductVersion", "1.0.0.0"

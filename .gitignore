@@ -10,6 +10,7 @@
 
 # Build klasörleri
 build/
+dist/
 bin/
 out/
 Debug/

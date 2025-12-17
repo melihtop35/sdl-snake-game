@@ -140,19 +140,19 @@ void Food::SpawnWithRandomType(const std::vector<std::pair<int, int>> &forbidden
 }
 
 // Rastgele tip seç (yüzdelik oranlarla)
-// 50% APPLE_RED, 20% APPLE_GREEN, 10% OLIEBOL, 5% EASTER_EGG, 15% BOMB
+// 45% APPLE_RED, 20% APPLE_GREEN, 10% OLIEBOL, 10% EASTER_EGG, 15% BOMB
 FoodType Food::GetRandomType()
 {
     std::uniform_int_distribution<int> dist(1, 100);
     int roll = dist(m_randomEngine);
 
-    if (roll <= 50) // 1-50 (50%)
+    if (roll <= 45) // 1-45 (45%)
         return FoodType::APPLE_RED;
-    else if (roll <= 70) // 51-70 (20%)
+    else if (roll <= 65) // 46-65 (20%)
         return FoodType::APPLE_GREEN;
-    else if (roll <= 80) // 71-80 (10%)
+    else if (roll <= 75) // 66-75 (10%)
         return FoodType::OLIEBOL;
-    else if (roll <= 85) // 81-85 (5%)
+    else if (roll <= 85) // 76-85 (10%)
         return FoodType::EASTER_EGG;
     else // 86-100 (15%)
         return FoodType::BOMB;

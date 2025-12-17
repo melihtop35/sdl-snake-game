@@ -258,7 +258,8 @@ void UIManager::RenderMainMenu()
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-                             ImGuiWindowFlags_NoBringToFrontOnFocus;
+                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoScrollWithMouse;
 
     ImGui::Begin("Ana Menu", nullptr, flags);
 
@@ -331,7 +332,8 @@ void UIManager::RenderSettings()
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-                             ImGuiWindowFlags_NoBringToFrontOnFocus;
+                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoScrollWithMouse;
 
     ImGui::Begin("Ayarlar", nullptr, flags);
 
@@ -389,6 +391,10 @@ void UIManager::RenderSettings()
             }
             ImGui::EndCombo();
         }
+
+        // Zorluk açıklaması
+        ImGui::SetCursorPosX(panelX);
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.3f, 1.0f), "* Yuksek cozunurluk = Buyuk oyun haritasi (Zor)");
     }
 
     ImGui::Spacing();
@@ -469,7 +475,8 @@ void UIManager::RenderGameOver(int score, int highScore)
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-                             ImGuiWindowFlags_NoBringToFrontOnFocus;
+                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoScrollWithMouse;
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.8f));
     ImGui::Begin("Game Over", nullptr, flags);
@@ -543,7 +550,8 @@ void UIManager::RenderPauseScreen()
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-                             ImGuiWindowFlags_NoBringToFrontOnFocus;
+                             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoScrollWithMouse;
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.7f));
     ImGui::Begin("Pause", nullptr, flags);
@@ -621,12 +629,14 @@ void UIManager::RenderGameHUD(SDL_Renderer *renderer, int score, int highScore, 
     ImGui::Begin("HUD", nullptr, flags);
     ImGui::PopStyleColor();
 
-    // Font ölçekleme
+    // Font ölçekleme - native çözünürlüğe göre
     ImGuiIO &io = ImGui::GetIO();
+    float savedFontScale = io.FontGlobalScale;
     io.FontGlobalScale = 1.3f * scale;
+    ImGui::SetWindowFontScale(1.0f * scale);
 
     float padding = 20.0f * scale;
-    float yPos = 8.0f * scale;
+    float yPos = (hudHeight - ImGui::GetFontSize()) / 2.0f;
 
     // Skor
     ImGui::SetCursorPos(ImVec2(padding, yPos));
@@ -647,7 +657,8 @@ void UIManager::RenderGameHUD(SDL_Renderer *renderer, int score, int highScore, 
     ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", highScoreText);
 
     // Font ölçeği sıfırla
-    io.FontGlobalScale = 1.5f;
+    ImGui::SetWindowFontScale(1.0f);
+    io.FontGlobalScale = savedFontScale;
 
     ImGui::End();
 }

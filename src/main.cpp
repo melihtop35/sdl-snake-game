@@ -1,11 +1,20 @@
 #include "../include/Engine/Game.h"
 #include <iostream>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 int main(int argc, char *argv[])
 {
     // Kullanılmayan parametre uyarısını engelle
     (void)argc;
     (void)argv;
+
+#ifdef _WIN32
+    // Windows'ta DPI awareness'ı aktif et - gerçek ekran çözünürlüğünü almak için
+    SetProcessDPIAware();
+#endif
 
     // Oyun örneği oluştur
     Game game;
