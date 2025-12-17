@@ -179,67 +179,15 @@ if ($LASTEXITCODE -ne 0) {
 Write-Success "Derleme tamamlandı: $ExePath"
 
 # DLL dosyalarını kopyala
-Write-Step "Gerekli DLL dosyaları kopyalanıyor..."
-$RequiredDLLs = @(
-    "SDL2.dll",
-    "SDL2_image.dll",
-    "SDL2_ttf.dll",
-    "SDL2_mixer.dll",
-    "libpng16-16.dll",
-    "zlib1.dll",
-    "libjpeg-62.dll",
-    "libjpeg-8.dll",
-    "libwebp-7.dll",
-    "libwebpdemux-2.dll",
-    "libavif-16.dll",
-    "libjxl.dll",
-    "libjxl_cms.dll",
-    "libjxl_threads.dll",
-    "libtiff-6.dll",
-    "libfreetype-6.dll",
-    "libharfbuzz-0.dll",
-    "libbz2-1.dll",
-    "libbrotlidec.dll",
-    "libbrotlicommon.dll",
-    "libglib-2.0-0.dll",
-    "libgraphite2.dll",
-    "libintl-8.dll",
-    "libiconv-2.dll",
-    "libpcre2-8-0.dll",
-    "libmpg123-0.dll",
-    "libopusfile-0.dll",
-    "libopus-0.dll",
-    "libogg-0.dll",
-    "libvorbis-0.dll",
-    "libvorbisfile-3.dll",
-    "libFLAC.dll",
-    "libmodplug-1.dll",
-    "libwavpack-1.dll",
-    "libxmp.dll",
-    "libfluidsynth-3.dll",
-    "libsndfile-1.dll",
-    "libportaudio.dll",
-    "libreadline8.dll",
-    "libtermcap.dll",
-    "libsharpyuv-0.dll",
-    "liblzma-5.dll",
-    "libdeflate.dll",
-    "libjbig-0.dll",
-    "libLerc.dll",
-    "libzstd.dll",
-    "libstdc++-6.dll",
-    "libgcc_s_seh-1.dll",
-    "libwinpthread-1.dll"
-)
-
+Write-Step "Tüm gerekli DLL dosyaları kopyalanıyor..."
 $DLLDir = "$MSYS2_ROOT\bin"
+
+# MSYS2/UCRT64 bin klasöründeki tüm DLL'leri kopyala
+$AllDLLs = Get-ChildItem -Path $DLLDir -Filter "*.dll" -File
 $CopiedDLLs = 0
-foreach ($dll in $RequiredDLLs) {
-    $DllPath = Join-Path $DLLDir $dll
-    if (Test-Path $DllPath) {
-        Copy-Item $DllPath -Destination $DistDir -Force
-        $CopiedDLLs++
-    }
+foreach ($dll in $AllDLLs) {
+    Copy-Item $dll.FullName -Destination $DistDir -Force
+    $CopiedDLLs++
 }
 Write-Success "$CopiedDLLs DLL dosyası kopyalandı"
 
