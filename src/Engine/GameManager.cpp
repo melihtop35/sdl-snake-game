@@ -1,6 +1,7 @@
 #include "../../include/Engine/GameManager.h"
 #include "../../include/Input/InputManager.h"
 #include "../../include/Engine/AudioManager.h"
+#include "../../include/Effects/ParticleSystem.h"
 #include <iostream>
 #include <random>
 #include <chrono>
@@ -304,6 +305,16 @@ void GameManager::CheckFoodCollision()
 
     FoodType foodType = collidedFood->GetType();
 
+    // Food pozisyonunu al (parçacık efekti için)
+    int foodX, foodY;
+    collidedFood->GetPosition(foodX, foodY);
+
+    // Parçacık efekti oynat (tüm yem türleri için)
+    ParticleSystem::GetInstance().PlayFoodCollect(
+        static_cast<float>(foodX),
+        static_cast<float>(foodY),
+        static_cast<int>(foodType));
+
     switch (foodType)
     {
     case FoodType::APPLE_RED:
@@ -324,8 +335,20 @@ void GameManager::CheckFoodCollision()
         break;
 
     case FoodType::BOMB:
+    {
         // Bomba: 1 parça kaybet ve -20 puan
         AddScore(-20);
+
+        // Shrink olmadan önce kuyruk pozisyonunu al (patlama efekti için)
+        const auto &body = m_snake->GetBody();
+        if (body.size() > 1)
+        {
+            const SnakeSegment &tail = body.back();
+            ParticleSystem::GetInstance().PlayBombDamage(
+                static_cast<float>(tail.x),
+                static_cast<float>(tail.y));
+        }
+
         m_snake->Shrink(1);
         AudioManager::GetInstance().PlaySoundEffect("damage");
 
@@ -337,6 +360,7 @@ void GameManager::CheckFoodCollision()
             return;
         }
         break;
+    }
     }
 
     // Yenen food'u deaktif et (pool'a geri dön)
@@ -357,7 +381,8 @@ void GameManager::CheckWallCollision()
 
     if (head.x < minX || head.x >= maxX || head.y < minY || head.y >= maxY)
     {
-        // Duvara çarptı!
+        // Duvara çarptı! Yılan ölüm sekansı başlat
+        TriggerSnakeDeathEffect();
         m_currentState = GameState::GAME_OVER;
         AudioManager::GetInstance().PlaySoundEffect("damage");
         AudioManager::GetInstance().PlaySoundEffect("gameover");
@@ -372,7 +397,8 @@ void GameManager::CheckSelfCollision()
 
     if (m_snake->CheckSelfCollision())
     {
-        // Kendine çarptı!
+        // Kendine çarptı! Yılan ölüm sekansı başlat
+        TriggerSnakeDeathEffect();
         m_currentState = GameState::GAME_OVER;
         AudioManager::GetInstance().PlaySoundEffect("damage");
         AudioManager::GetInstance().PlaySoundEffect("gameover");
@@ -490,6 +516,27 @@ void GameManager::ClearBuff()
         m_snake->SetMoveDelay(m_originalMoveDelay);
     }
 }
+
+// Yılan ölüm efekti tetikleme
+void GameManager::TriggerSnakeDeathEffect()
+{
+    if (!m_snake)
+        return;
+
+    const auto &body = m_snake->GetBody();
+    std::vector<std::pair<float, float>> segments;
+
+    // Baştan kuyruğa tüm segment pozisyonlarını al
+    for (const auto &segment : body)
+    {
+        segments.push_back({static_cast<float>(segment.x),
+                            static_cast<float>(segment.y)});
+    }
+
+    // Sıralı patlama efektini başlat (her segment 0.05 saniye arayla patlayacak)
+    ParticleSystem::GetInstance().PlaySnakeDeathSequence(segments, 0.05f);
+}
+
 // Pencere yeniden boyutlandırıldığında
 void GameManager::OnResize(int newGridWidth, int newGridHeight, int newCellSize, int newGridOffsetX, int newHudOffset)
 {

@@ -107,4 +107,7 @@ private:
     void ApplyRandomBuff();
     void UpdateBuff(float deltaTime);
     void ClearBuff();
+
+    // Yılan ölüm efekti tetikleme
+    void TriggerSnakeDeathEffect();
 };

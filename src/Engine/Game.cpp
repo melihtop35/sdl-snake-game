@@ -3,6 +3,7 @@
 #include "../../include/Engine/AudioManager.h"
 #include "../../include/Input/InputManager.h"
 #include "../../include/UI/UIManager.h"
+#include "../../include/Effects/ParticleSystem.h"
 #include <iostream>
 #include <algorithm>
 
@@ -63,6 +64,9 @@ bool Game::Initialize(const std::string &title)
 
     // Game Manager'ı başlat (HUD yüksekliği offset ile)
     GameManager::GetInstance().Initialize(m_gridWidth, m_gridHeight, m_cellSize, m_hudHeight, m_gridOffsetX);
+
+    // Particle System'ı başlat
+    ParticleSystem::GetInstance().Initialize();
 
     // Çözünürlük değişikliği callback'i
     UIManager::GetInstance().SetResolutionChangeCallback([this](int newWidth, int newHeight)
@@ -311,6 +315,9 @@ void Game::Update()
     GameManager::GetInstance().HandleInput();
     GameManager::GetInstance().Update(m_deltaTime);
 
+    // Parçacık sistemi güncelle
+    ParticleSystem::GetInstance().Update(m_deltaTime);
+
     // Oyun durumuna göre MenuState'i senkronize et
     GameState currentState = GameManager::GetInstance().GetCurrentState();
     MenuState currentMenuState = UIManager::GetInstance().GetMenuState();
@@ -387,6 +394,9 @@ void Game::Render()
         // Oyun nesnelerini çiz
         GameManager::GetInstance().Render(m_renderer);
 
+        // Parçacık efektlerini çiz (oyun nesnelerinin üstünde)
+        ParticleSystem::GetInstance().Render(m_renderer);
+
         // HUD (ImGui ile)
         UIManager::GetInstance().RenderGameHUD(m_renderer, score, highScore,
                                                GameManager::GetInstance().GetSnakeLength());
@@ -457,6 +467,9 @@ void Game::Render()
 
         // Oyun nesneleri
         GameManager::GetInstance().Render(m_renderer);
+
+        // Parçacık efektlerini çiz (yılan ölüm animasyonu için)
+        ParticleSystem::GetInstance().Render(m_renderer);
 
         // Game over ekranı
         UIManager::GetInstance().RenderGameOver(score, highScore);
@@ -584,6 +597,7 @@ void Game::Cleanup()
     UnloadAssets();
 
     // Manager'ları temizle
+    ParticleSystem::GetInstance().Cleanup();
     UIManager::GetInstance().Cleanup();
     AudioManager::GetInstance().Cleanup();
 

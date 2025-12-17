@@ -22,6 +22,8 @@
                 "${workspaceFolder}\\src\\Game\\FoodPool.cpp",
                 "${workspaceFolder}\\src\\Input\\InputManager.cpp",
                 "${workspaceFolder}\\src\\UI\\UIManager.cpp",
+                "${workspaceFolder}\\src\\Effects\\ParticleEmitter.cpp",
+                "${workspaceFolder}\\src\\Effects\\ParticleSystem.cpp",
                 "${workspaceFolder}\\third_party\\imgui\\imgui.cpp",
                 "${workspaceFolder}\\third_party\\imgui\\imgui_draw.cpp",
                 "${workspaceFolder}\\third_party\\imgui\\imgui_tables.cpp",
