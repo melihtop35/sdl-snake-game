@@ -1,0 +1,55 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Projeyi Derle",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-I", "C:\\msys64\\ucrt64\\include",
+                "-I", "${workspaceFolder}\\include",
+                "-I", "${workspaceFolder}\\third_party",
+                "${workspaceFolder}\\src\\main.cpp",
+                "${workspaceFolder}\\src\\Engine\\Game.cpp",
+                "${workspaceFolder}\\src\\Engine\\GameObject.cpp",
+                "${workspaceFolder}\\src\\Engine\\GameManager.cpp",
+                "${workspaceFolder}\\src\\Engine\\AudioManager.cpp",
+                "${workspaceFolder}\\src\\Game\\Entity.cpp",
+                "${workspaceFolder}\\src\\Game\\Player.cpp",
+                "${workspaceFolder}\\src\\Game\\Snake.cpp",
+                "${workspaceFolder}\\src\\Game\\Food.cpp",
+                "${workspaceFolder}\\src\\Game\\FoodPool.cpp",
+                "${workspaceFolder}\\src\\Input\\InputManager.cpp",
+                "${workspaceFolder}\\src\\UI\\UIManager.cpp",
+                "${workspaceFolder}\\third_party\\imgui\\imgui.cpp",
+                "${workspaceFolder}\\third_party\\imgui\\imgui_draw.cpp",
+                "${workspaceFolder}\\third_party\\imgui\\imgui_tables.cpp",
+                "${workspaceFolder}\\third_party\\imgui\\imgui_widgets.cpp",
+                "${workspaceFolder}\\third_party\\imgui\\imgui_impl_sdl2.cpp",
+                "${workspaceFolder}\\third_party\\imgui\\imgui_impl_sdlrenderer2.cpp",
+                "-o",
+                "${workspaceFolder}\\game.exe",
+                "-L", "C:\\msys64\\ucrt64\\lib",
+                "-lmingw32",
+                "-lSDL2main",
+                "-lSDL2",
+                "-lSDL2_image",
+                "-lSDL2_ttf",
+                "-lSDL2_mixer"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Tüm projeyi SDL2 ve Dear ImGui ile derle"
+        }
+    ],
+    "version": "2.0.0"
+}
